@@ -10,11 +10,6 @@ import database_operations as sql
 app = Flask(__name__, template_folder="front_end")
 app.secret_key = "supersecretkey"
 
-# Main page of Airbooking
-@app.route("/")
-def main():
-    sql.connection.reconnect()
-    return render_template("front_page.html")
 
 
 # USER
@@ -33,8 +28,7 @@ def ulogin():
         else:
             flash(result, 'Warning')
             return redirect(url_for('ulogin'))
-    else:
-        return render_template("user_login.html")
+    
 
 
 # User registration route
@@ -58,14 +52,9 @@ def register():
             flash("User Name Already Taken", 'Warning')
             return redirect(url_for('register'))
 
-    else:
-        return render_template("user_register.html")
+  
 
 
-# User Home page
-@app.route("/userhome")
-def userhome():
-    return render_template("user_home.html", user=session['user_name'])
 
 
 # OPERATIONS
@@ -78,14 +67,8 @@ def searchflight():
         date = request.form['date']
         val = func.time(date, time)
         flights = func.display_flights(val)
-        return render_template('search_flights.html', flights=flights)
-    return render_template('search_flights.html')
+        
 
-
-# Route to check My Bookings
-@app.route("/mybook")
-def mybook():
-    return render_template('my_bookings.html', mybookings=func.display_myBookings(session['user_id']))
 
 
 # route to book flights
@@ -116,11 +99,7 @@ def alogin():
             session['loggedin'] = True
             session['admin_id'] = admin_id
             return redirect(url_for('adminhome'))
-        else:
-            flash(result, 'Warning')
-            return redirect(url_for('alogin'))
-    else:
-        return render_template("admin_login.html")
+   
 
 
 # Admin Home Page
@@ -151,8 +130,6 @@ def removeflight():
         result = func.remove_flights(request.form['fid'])
         flash(result, 'alert')
         return redirect(url_for('removeflight'))
-    else:
-        return render_template('remove_flights.html')
 
 
 # route to display all bookings in flight id
@@ -164,9 +141,7 @@ def allbook():
         flight = func.flight_detail(flight_id)
         if flight == False:
             flash("No Flights Found")
-        return render_template('all_bookings.html', flight=flight, allbookings=users)
-    return render_template('all_bookings.html')
-
+     
 
 # Admin Logout
 @app.route("/ulogout")
